@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeShellExecution": [
+      {
+        "command": ".cursor/hooks/runtime-only-shell.sh",
+        "failClosed": true
+      }
+    ],
+    "preToolUse": [
+      {
+        "command": ".cursor/hooks/runtime-only-shell.sh",
+        "matcher": "Shell",
+        "failClosed": true
+      }
+    ]
+  }
+}
