@@ -54,7 +54,7 @@ This repo is that contract — human-readable (`CLAUDE.md`, skills) plus mechani
 3. **Resolve** an existing capability (company store, `RUNTIME_CAPABILITIES_DIR`, or Runtime Home `capabilities/`) — or author a new Markdown capability that only uses published provider operations.
 4. **Hand off** with `runtime capability validate|execute …` or a direct `runtime <provider> …` operation. Never bypass the runtime.
 
-Reusable capabilities belong in [`engineering-runtime-capabilities`](https://github.com/kishore-gutta/engineering-runtime-capabilities). CI demos belong in [`engineering-runtime-samples`](https://github.com/kishore-gutta/engineering-runtime-samples). Architecture docs live in [`engineering-runtime/docs`](https://github.com/kishore-gutta/engineering-runtime/tree/main/docs) and the published site [`engineering-runtime-series`](https://github.com/kishore-gutta/engineering-runtime-series).
+Reusable capabilities belong in [`engineering-runtime-capabilities`](https://github.com/kishore-gutta/engineering-runtime-capabilities). CI demos belong in [`engineering-runtime-ci`](https://github.com/kishore-gutta/engineering-runtime-ci). Architecture docs live in [`engineering-runtime/docs`](https://github.com/kishore-gutta/engineering-runtime/tree/main/docs) and the published site [`engineering-runtime-series`](https://github.com/kishore-gutta/engineering-runtime-series).
 
 ## Non-goals
 
