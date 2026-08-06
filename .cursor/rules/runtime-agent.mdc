@@ -51,4 +51,4 @@ Use `runtime files …` or editor tools for local contract files.
 - Editing the runtime Go source to "make the task easier" unless the user
   explicitly asked to change this agent-contract repo itself
 
-Read `CLAUDE.md` and `.claude/skills/`.
+Read `RUNTIME-AGENT.md` (the vendor-neutral contract) and `.claude/skills/`.

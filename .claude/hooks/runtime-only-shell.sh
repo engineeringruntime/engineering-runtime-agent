@@ -19,7 +19,7 @@ fi
 reason=${result#DENY|}
 reason="${reason}
 
-See CLAUDE.md — reason only about which runtime commands achieve the request."
+See RUNTIME-AGENT.md — reason only about which runtime commands achieve the request."
 
 jq -n --arg reason "$reason" '{
   hookSpecificOutput: {
