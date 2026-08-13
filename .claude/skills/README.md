@@ -2,7 +2,7 @@
 
 | File | Answers |
 |---|---|
-| [`RUNTIME-AGENT.md`](./RUNTIME-AGENT.md) | How to turn intent into `runtime` requests (discover → resolve → execute) |
+| [`RUNTIME-AGENT.md`](./RUNTIME-AGENT.md) | How to turn intent into `runtime` requests (discover → validate → `github file put`) |
 | [`ALLOWED-SURFACE.md`](./ALLOWED-SURFACE.md) | What Bash/`runtime` surface is in-bounds vs forbidden |
 | [`CAPABILITY-AUTHORING.md`](./CAPABILITY-AUTHORING.md) | How to actually author one when nothing fits — grammar, verified mechanics, policy constraints, a worked 18-step example |
 

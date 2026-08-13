@@ -41,7 +41,8 @@ installed binary.
 1. Existing `capabilities/*` → `runtime capability validate|execute`
 2. Published `runtime <provider> …` from `commands/` / `--help`
 3. Author a new capability from Runtime Home `specs/` (only published ops) →
-   validate → execute
+   `runtime capability validate` → `runtime github file put` (UTF-8 `content=`;
+   never `git`/`gh`/`curl`/`github api PUT …/contents/`)
 4. Missing provider operation → report the gap (never bypass)
 
 ## Refuse

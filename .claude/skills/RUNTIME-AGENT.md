@@ -10,10 +10,12 @@ commands/capabilities satisfy the request — never about bypass tools.
 
 1. **Clarify intent** — what outcome, which org/project/cluster (Runtime Context), dry-run vs apply.
 2. **Discover surface**
+   - Runtime Home `RUNTIME-AGENT.md` and `manifest.json` (version-exact for this binary)
    - `runtime --help` / `runtime <provider> --help`
    - Runtime Home `commands/*.txt` and `specs/`
 3. **Prefer existing capability**
-   - Search `RUNTIME_CAPABILITIES_DIR` or `~/.engineering-runtime/capabilities/`
+   - `runtime capability list` — a Home cache is a non-authoritative copy
+   - Search `RUNTIME_CAPABILITIES_DIR` or a configured `capabilities.sources` directory
    - `runtime capability validate <name>`
    - `runtime capability execute <name> --input k=v …`
 4. **If none exists** — author Markdown under the capabilities directory the engineer uses (often `../engineering-runtime-capabilities` or a team clone), using only operations that resolve for this binary. Validate, then execute.
@@ -22,8 +24,9 @@ commands/capabilities satisfy the request — never about bypass tools.
 
 ## Inputs and context
 
-- Do not hardcode org, project, namespace, cluster. Prefer Runtime Context
-  (`runtime context show` / `use`) and capability `inputs:`.
+- Do not hardcode org, project, namespace, cluster. Tools and CI own effective
+  context; Runtime observes one snapshot at operation time. Declare capability
+  `inputs:` for values the workflow cannot invent.
 - Env vars the runtime understands are listed in Runtime Home
   `commands/runtime_env_variables.txt` (seeded on bootstrap).
 

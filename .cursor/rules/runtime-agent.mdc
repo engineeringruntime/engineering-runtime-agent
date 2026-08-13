@@ -36,8 +36,8 @@ Use `runtime files …` or editor tools for local contract files.
 
 ## Workflow
 
-1. Discover: `runtime version` / `--help` / Runtime Home `commands/` + `specs/` + `capabilities/`
-2. Prefer `runtime capability execute …` when a capability fits
+1. Discover: `runtime version` / `--help` / Runtime Home `RUNTIME-AGENT.md` + `manifest.json` + `commands/` + `specs/`
+2. Prefer `runtime capability list` then `runtime capability execute …` when a capability fits
 3. Else compose published `runtime <provider> <operation> …`
 4. Else author Markdown under the capabilities dir from `specs/`, then
    `runtime capability validate` → `execute`

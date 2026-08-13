@@ -16,7 +16,7 @@ re-derive the same facts by trial and error.
 | 1 | Existing capability | `runtime capability validate\|execute <name>` |
 | 2 | Published provider operation | `runtime <provider> <operation> …` |
 | 3 | Allowed binary, no provider covers it | `runtime command run <binary> …` |
-| 4 | Author a new capability | write Markdown → `validate` → `execute` |
+| 4 | Author a new capability | write Markdown → `validate` → `github file put` |
 | 5 | Nothing covers it | **report the gap** — never bypass |
 
 Authoring (4) is expected, not a last resort. Bypassing `runtime` never is.
@@ -58,29 +58,26 @@ not improvise it in a capability file.
 
 ---
 
-## 2. Discovery — five commands, in this order
+## 2. Discovery — local contracts, then help
 
 ```text
 runtime version                  # what binary am I talking to
-runtime config validate          # providers + op counts + allowed_binaries + which are installed
-runtime auth status              # which providers are actually usable right now
-runtime context show             # org/project/namespace — often empty, do not assume
+runtime capability list          # what this install can resolve
 runtime <provider> --help        # the authoritative operation list
 ```
 
-`runtime config validate` is the highest-value single command: it prints the
-Runtime Provider surface, the Command Engine's `allowed_binaries` **with an
-installed ✓/✗ per binary**, and the resolved config/policy/context paths.
+Read `<Runtime Home>/RUNTIME-AGENT.md` and `manifest.json` first with your
+file-read tool. If they are missing, restore from this binary and stop — do
+not fetch `/metadata/*`. Do not `cat`/`ls`, and do not `runtime files read`
+those contracts: they are File Engine protected.
 
-Then read the contracts on disk with `runtime files read|list` (never
-`cat`/`ls`):
+Then read:
 
 | Path | Use |
 |---|---|
 | `~/.engineering-runtime/specs/capability-spec.md` | the grammar — the parser rejects any key not in it |
 | `~/.engineering-runtime/specs/<provider>/` | per-provider authoring rules |
-| `~/.engineering-runtime/capabilities/<provider>/` | ~46 installed examples; read two before writing one |
-| `~/.engineering-runtime/policy-config.yaml` | **read this before designing**, not after a denial |
+| configured capability source (`runtime capability list`) | examples; a Home `capabilities/` copy is a non-authoritative cache |
 
 ---
 
@@ -106,8 +103,10 @@ is what makes capabilities deterministic, and also why they are rarely
 idempotent (see §6).
 
 `validate` proves well-formedness and that every operation resolves for this
-binary. It does **not** prove the run will succeed — credentials, policy and
-network still apply at execute time.
+binary. It does **not** prove source admission or permission to invoke. Push
+only after it succeeds, via `runtime github file put` (UTF-8 `content=`;
+never `git`/`gh`/`curl`/`github api PUT …/contents/`). Credentials, policy
+and network still apply at execute time.
 
 ---
 
@@ -137,9 +136,11 @@ table blindly, but start from it.
 
 **`files` provider — 5 operations, no `mkdir`.** `read`, `write`, `append`,
 `delete`, `list`. `write` will not create parents. There is no operation
-that creates a directory. The runtime is a deterministic executor, so it
-also has **no encoder** — no base64, no templating, no string transforms.
-Anything needing transformation must arrive as an input or a literal.
+that creates a directory. The runtime is a deterministic executor, so it also has **no generic encoder**
+— no templating, no string transforms. `github file put` is the exception that
+proves the rule: the **provider** UTF-8/base64-encodes `content`. Do not
+hand-build that encoding in a capability. Anything else needing transformation
+must arrive as an input or a literal.
 
 **Policy denials that shape design:**
 

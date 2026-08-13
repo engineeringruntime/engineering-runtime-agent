@@ -15,9 +15,10 @@ governed and traceable instead of being whatever the model decided to type.
 
 ## Use this in your own project
 
-**[`RUNTIME-AGENT.md`](RUNTIME-AGENT.md) is the contract**, and it is
-vendor-neutral: any assistant that can read instructions and run a shell command
-can follow it.
+**[`RUNTIME-AGENT.md`](RUNTIME-AGENT.md) is a pointer**, not a forked contract.
+The canonical operational rules live in `engineering-runtime/RUNTIME-AGENT.md`
+and, after `runtime bootstrap`, in `<Runtime Home>/RUNTIME-AGENT.md`. The
+installed Home copy is version-exact and wins if this checkout disagrees.
 
 | Copy into your project | What it does |
 |---|---|
@@ -28,8 +29,10 @@ can follow it.
 | `scripts/runtime-shell-policy.sh` | The shared allow/deny logic both hook systems call |
 | `.claude/skills/` | Reference for authoring capabilities |
 
-Using an assistant with no hook system? **Paste `RUNTIME-AGENT.md` into its
-instructions or system prompt.** That is the baseline, and it works everywhere.
+Using an assistant with no hook system? **Paste the Runtime Home
+`RUNTIME-AGENT.md` into its instructions or system prompt**, not this
+repository's pointer. That is the baseline, and it describes the binary you
+actually have.
 
 ### What each assistant can actually enforce
 
@@ -74,7 +77,7 @@ for the prompt to paste and what to expect back.
 
 | Path | Role |
 |---|---|
-| `RUNTIME-AGENT.md` | **The governing contract** — vendor-neutral, canonical |
+| `RUNTIME-AGENT.md` | **Pointer** to the canonical contract in `engineering-runtime` / the installed Runtime Home |
 | `CLAUDE.md` | Claude Code entry point → points at the contract |
 | `.cursor/rules/runtime-agent.mdc` | Always-on Cursor rule → points at the contract |
 | `.claude/hooks/` + `.claude/settings.json` | Claude Code: Bash must be `runtime…` |
@@ -91,17 +94,21 @@ providers, no `main.go`. Execution always belongs to
 
 ## How an agent is supposed to work
 
-1. **Understand intent** from the engineer (natural language).
-2. **Discover** what the installed runtime can do — prefer Runtime Home
-   contracts after bootstrap:
-   - `${ENGINEERING_RUNTIME_HOME:-$HOME/.engineering-runtime}/commands/`
-   - `${ENGINEERING_RUNTIME_HOME:-$HOME/.engineering-runtime}/specs/`
-   - `runtime <provider> --help`
-3. **Resolve** an existing capability (company store,
-   `RUNTIME_CAPABILITIES_DIR`, or Runtime Home `capabilities/`) — or author a new
-   Markdown capability that uses **only** published provider operations.
-4. **Hand off** with `runtime capability validate|execute …` or a direct
-   `runtime <provider> …` operation. Never bypass the runtime.
+1. **Discover locally** — `runtime version`; read Runtime Home
+   `RUNTIME-AGENT.md`, `manifest.json`, and `specs/`; confirm with
+   `runtime <provider> --help`. If those contracts are missing, restore them
+   from this binary and stop. Do not fetch `/metadata/*`.
+2. **Learn the shape** from the configured capability source
+   (`runtime capability list`). A Home `capabilities/` copy is a
+   non-authoritative cache.
+3. **Author** Markdown into that source, never silently into Runtime Home.
+4. **Validate** with `runtime capability validate <path>` until clean. That
+   proves grammar and this binary's operations, not source admission or
+   permission to run.
+5. **Push** with `runtime github file put` (UTF-8 `content=`; never `git`,
+   `gh`, `curl`, or `github api PUT …/contents/`).
+6. **Verify** with `runtime audit tail`. Execute only when the user asked to
+   run it.
 
 Reusable capabilities belong in
 [`engineering-runtime-capabilities`](https://github.com/kishore-gutta/engineering-runtime-capabilities).
