@@ -87,8 +87,9 @@ for the prompt to paste and what to expect back.
 | `.claude/skills/CAPABILITY-AUTHORING.md` | Authoring playbook — grammar, mechanics, worked example |
 
 This repo **does not execute engineering work**. It has no engines, no
-providers, no `main.go`. Execution always belongs to
-[`engineering-runtime`](https://github.com/kishore-gutta/engineering-runtime).
+providers, no `main.go`. Execution always belongs to the released
+[`runtime` binary](https://github.com/engineeringruntime/engineering-runtime-releases/releases).
+Its source repository remains private by design.
 
 ---
 
@@ -144,4 +145,3 @@ Working **on** this repo rather than consuming it? Read
 - Embedding platform CLIs or SDKs
 - Becoming an AI-vendor-specific product — the contract is vendor-neutral by
   construction, and no assistant is privileged by the repository layout
-
