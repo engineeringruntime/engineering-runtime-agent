@@ -22,6 +22,6 @@ fi
 reason=${result#DENY|}
 jq -n \
   --arg agent "$reason" \
-  --arg user "Blocked: only \`runtime\` shell commands are allowed in engineering-runtime-ai-agent." \
+  --arg user "Blocked: only \`runtime\` shell commands are allowed in engineering-runtime-agent." \
   '{permission:"deny", agent_message:$agent, user_message:$user}'
 exit 0
