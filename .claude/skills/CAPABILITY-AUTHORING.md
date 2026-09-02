@@ -13,10 +13,10 @@ re-derive the same facts by trial and error.
 
 | # | Path | Command |
 |---|---|---|
-| 1 | Existing capability | `runtime capability validate\|execute <name>` |
+| 1 | Existing capability | `runtime capability validate\|plan <name>`; execute only when explicitly requested |
 | 2 | Published provider operation | `runtime <provider> <operation> …` |
 | 3 | Allowed binary, no provider covers it | `runtime command run <binary> …` |
-| 4 | Author a new capability | write Markdown → `validate` → `github file put` |
+| 4 | Author a new capability | `authoring-context` → governed file write → `validate` → `plan` → review |
 | 5 | Nothing covers it | **report the gap** — never bypass |
 
 Authoring (4) is expected, not a last resort. Bypassing `runtime` never is.
@@ -62,14 +62,16 @@ not improvise it in a capability file.
 
 ```text
 runtime version                  # what binary am I talking to
+runtime --output json capability authoring-context
 runtime capability list          # what this install can resolve
 runtime <provider> --help        # the authoritative operation list
 ```
 
-Read `<Runtime Home>/RUNTIME-AGENT.md` and `manifest.json` first with your
-file-read tool. If they are missing, restore from this binary and stop — do
-not fetch `/metadata/*`. Do not `cat`/`ls`, and do not `runtime files read`
-those contracts: they are File Engine protected.
+`authoring-context` is the first command because it reports the version-matched
+contract paths and digests, exact selected source, policy provenance/write
+readiness, provider operation counts and allowed/installed binaries in one
+read-only result. If `authoring_ready` is false, report its reason and stop;
+never fall back to the first source or the Runtime Home cache.
 
 Then read:
 
@@ -103,14 +105,16 @@ is what makes capabilities deterministic, and also why they are rarely
 idempotent (see §6).
 
 `validate` proves well-formedness and that every operation resolves for this
-binary. It does **not** prove source admission or permission to invoke. Push
-only after it succeeds, via `runtime github file put` (UTF-8 `content=`;
-never `git`/`gh`/`curl`/`github api PUT …/contents/`). Credentials, policy
-and network still apply at execute time.
+binary. It does **not** prove source admission or permission to invoke. Follow
+it with `runtime capability plan <path> --input k=v`: plan applies the same
+provider resolution, context, file grants, compiled floor and document policy
+used by execution, while performing no authentication, command/network
+execution, mutation or audit. Show its decisions with the source, digest and
+diff. Publish only when explicitly requested; execute only as a separate action.
 
 ---
 
-## 4. Verified mechanics (probed this session, runtime 0.4.0)
+## 4. Verified mechanics (re-check against the installed Runtime contracts)
 
 | Question | Answer | How it was established |
 |---|---|---|
@@ -119,7 +123,7 @@ and network still apply at execute time.
 | Do Actions `${{ github.ref }}` expressions collide with substitution? | **No** — passed through byte-identical, including `${{ secrets.* }}` | dedicated probe |
 | Undeclared `${foo}`? | Left **verbatim** in the output — it silently becomes literal text in your committed file | same probe |
 | Does `files write` create parent directories? | **No** — `no such file or directory` | direct probe |
-| Working directory for `binary:` steps? | None. The Command Engine inherits wherever `runtime` was invoked — **always pass `git -C <dir>`** | documented in `github-git-clone-commit-push.md` (cites `internal/engine/command.go`); relied on in a successful run |
+| Working directory for `binary:` steps? | A private empty operation directory — **always pass `git -C <dir>`** when repository state is required | Runtime local-execution contract |
 | Repo for `cli`-backed `gh` operations? | Resolved from the **current** directory, i.e. usually the wrong repo — **always pass `--repo <owner>/<repo>`** | run output |
 | On step failure? | Execution **stops**; prior steps stay applied | policy denial at step 11 of 20 |
 
@@ -151,9 +155,9 @@ must arrive as an input or a literal.
 | `command_policy.rules.git.denied` | `push --force`, `push -f`, `reset --hard`, `clean -fd`, `filter-branch`, `update-ref -d` — matched anywhere in the arg run, so `git -C x push --force` is caught too |
 | `command_policy.denied_binaries` | `rm`, `sudo`, `chmod`, `curl`, `wget`, `ssh` — refused even if allow-listed |
 
-`allowed_binaries` lists 21 tools but only the **installed** ones can run;
-here that is `gh` and `git`. Everything else (`kubectl`, `terraform`, `helm`,
-cloud CLIs) resolves ✗ → report the gap rather than attempting it.
+`allowed_binaries` and installation state vary by policy and machine. Read the
+`binaries` array from `capability authoring-context`; never preserve a list from
+an earlier session as current fact.
 
 **When policy denies a step, adapt — do not route around the intent.** Ask
 whether a *different governed operation* legitimately covers the need. Swapping
@@ -209,23 +213,28 @@ one direct check that `files write` won't create parents, one policy denial
 at step 11 that forced a redesign, and a leftover half-scaffolded repo that
 policy (correctly) would not let the runtime delete.
 
-**Where new capabilities belong:** `engineering-runtime-capabilities/capabilities/<provider>/`,
-not this repo and not the runtime binary. Execute by path, or by name once
-`RUNTIME_CAPABILITIES_DIR` points at that clone (unset here, so Runtime Home
-`~/.engineering-runtime/capabilities` is the default resolution root).
+**Where new capabilities belong:** the exact directory reported as
+`selected_source.dir` by `capability authoring-context` — for the public corpus,
+`engineering-runtime-capabilities/capabilities/<provider>/`. Never this repo,
+the runtime binary, or Runtime Home. `RUNTIME_CAPABILITIES_DIR` relocates only
+the non-authoritative compatibility cache; it is not an authoring-source choice.
 
 ---
 
 ## 8. Checklist before declaring a capability done
 
 - [ ] `runtime capability validate <path>` passes
+- [ ] `runtime capability plan <path> --input ...` allows every step and produced no file/audit change
+- [ ] authoritative source, content digest and diff shown for review
 - [ ] every required input is documented, and none is a guessed placeholder
 - [ ] no hardcoded org/project/namespace — Runtime Context or an input
 - [ ] no hardcoded token, credential, or auth flow
 - [ ] no `transport:` anywhere, and no dependence on how an op is delivered
 - [ ] every `binary: git` step passes `-C <workdir>`
 - [ ] every `gh`-backed step passes `--repo`
-- [ ] checked against `policy-config.yaml` *before* running
+- [ ] checked through `capability plan` *before* running
+- [ ] commit/push/publish only if explicitly requested
+- [ ] execution is a separate explicit authorization
 - [ ] non-idempotent steps called out in the prose
 - [ ] gaps found (missing operations) written down, not silently worked around
 

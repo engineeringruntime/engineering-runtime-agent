@@ -95,21 +95,20 @@ Its source repository remains private by design.
 
 ## How an agent is supposed to work
 
-1. **Discover locally** — `runtime version`; read Runtime Home
-   `RUNTIME-AGENT.md`, `manifest.json`, and `specs/`; confirm with
-   `runtime <provider> --help`. If those contracts are missing, restore them
-   from this binary and stop. Do not fetch `/metadata/*`.
-2. **Learn the shape** from the configured capability source
-   (`runtime capability list`). A Home `capabilities/` copy is a
-   non-authoritative cache.
-3. **Author** Markdown into that source, never silently into Runtime Home.
-4. **Validate** with `runtime capability validate <path>` until clean. That
-   proves grammar and this binary's operations, not source admission or
-   permission to run.
-5. **Push** with `runtime github file put` (UTF-8 `content=`; never `git`,
-   `gh`, `curl`, or `github api PUT …/contents/`).
-6. **Verify** with `runtime audit tail`. Execute only when the user asked to
-   run it.
+1. **Discover locally** with `runtime --output json capability
+   authoring-context`. Use its installed contract digests, exact selected
+   source and policy readiness; never guess a source or fetch `/metadata/*`.
+2. **Reuse first** with `runtime capability list`, then ask for every missing
+   target or required input.
+3. **Author through Runtime** with `runtime files write|append` into the exact
+   selected authoritative worktree. Selection grants no write authority.
+4. **Validate and plan** with `runtime capability validate`, then
+   `runtime capability plan --input ...`. Plan performs no auth, execution,
+   mutation, network or audit.
+5. **Review** the diff, path, source, digest and per-step policy decisions.
+   Commit/push/publish only when explicitly requested.
+6. **Execute separately** only when the user explicitly asks, then verify the
+   per-step results and `runtime audit tail`.
 
 Reusable capabilities belong in
 [`engineering-runtime-capabilities`](https://github.com/engineeringruntime/engineering-runtime-capabilities).

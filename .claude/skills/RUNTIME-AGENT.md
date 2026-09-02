@@ -14,11 +14,11 @@ commands/capabilities satisfy the request — never about bypass tools.
    - `runtime --help` / `runtime <provider> --help`
    - Runtime Home `commands/*.txt` and `specs/`
 3. **Prefer existing capability**
+   - `runtime --output json capability authoring-context` — installed contracts, exact authoring source and policy readiness
    - `runtime capability list` — a Home cache is a non-authoritative copy
-   - Search `RUNTIME_CAPABILITIES_DIR` or a configured `capabilities.sources` directory
    - `runtime capability validate <name>`
-   - `runtime capability execute <name> --input k=v …`
-4. **If none exists** — author Markdown under the capabilities directory the engineer uses (often `../engineering-runtime-capabilities` or a team clone), using only operations that resolve for this binary. Validate, then execute.
+   - `runtime capability plan <name> --input k=v …`
+4. **If none exists** — author Markdown through `runtime files` into the exact configured `capabilities.authoring_source`. Validate, plan, and show the diff/digest. Publish and execute only through separate explicit requests.
 5. **Auth when needed** — `runtime auth login` / `status` / `logout` for the provider(s) involved.
 6. **Audit** — `runtime audit tail` when the engineer needs proof of what ran.
 

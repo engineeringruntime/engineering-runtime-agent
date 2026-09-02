@@ -28,7 +28,7 @@ runtime config validate
 runtime context show|list|use|…
 runtime auth login|logout|status
 runtime <provider> …
-runtime capability validate|execute …
+runtime capability authoring-context|list|validate|plan|execute …
 runtime audit …
 runtime resolve …
 ```
@@ -38,12 +38,12 @@ installed binary.
 
 ## Intent resolution
 
-1. Existing `capabilities/*` → `runtime capability validate|execute`
-2. Published `runtime <provider> …` from `commands/` / `--help`
-3. Author a new capability from Runtime Home `specs/` (only published ops) →
-   `runtime capability validate` → `runtime github file put` (UTF-8 `content=`;
-   never `git`/`gh`/`curl`/`github api PUT …/contents/`)
-4. Missing provider operation → report the gap (never bypass)
+1. `runtime capability authoring-context` → exact installed contracts/source/policy readiness
+2. Existing capability → `runtime capability validate|plan`; execute only when explicitly requested
+3. Published `runtime <provider> …` from `commands/` / `--help`
+4. Author through `runtime files` into the selected authoritative source →
+   `validate` → `plan` → review; publish only when requested
+5. Missing provider operation → report the gap (never bypass)
 
 ## Refuse
 
