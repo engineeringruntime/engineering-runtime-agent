@@ -145,6 +145,3 @@ Working **on** this repo rather than consuming it? Read
 - Becoming an AI-vendor-specific product — the contract is vendor-neutral by
   construction, and no assistant is privileged by the repository layout
 
-## License
-
-MIT — see [LICENSE](./LICENSE).
