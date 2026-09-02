@@ -1,4 +1,4 @@
-# engineering-runtime-ai-agent
+# engineering-runtime-agent
 
 **The Runtime Agent contract.** It constrains an AI assistant to achieve
 engineering tasks **only** through the `runtime` binary — Runtime Commands and
@@ -58,7 +58,7 @@ vendor. Any tool that grows a pre-execution hook can enforce the same contract.
 The contract is useless without the binary. No GitHub account or token needed:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/kishore-gutta/engineering-runtime-releases/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/engineeringruntime/engineering-runtime-releases/main/install.sh | sh
 runtime version
 ```
 
@@ -111,9 +111,9 @@ providers, no `main.go`. Execution always belongs to
    run it.
 
 Reusable capabilities belong in
-[`engineering-runtime-capabilities`](https://github.com/kishore-gutta/engineering-runtime-capabilities).
+[`engineering-runtime-capabilities`](https://github.com/engineeringruntime/engineering-runtime-capabilities).
 CI demos belong in
-[`engineering-runtime-ci`](https://github.com/kishore-gutta/engineering-runtime-ci).
+[`engineering-runtime-ci`](https://github.com/engineeringruntime/engineering-runtime-ci).
 
 ---
 
