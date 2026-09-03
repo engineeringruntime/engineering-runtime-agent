@@ -216,8 +216,14 @@ policy (correctly) would not let the runtime delete.
 **Where new capabilities belong:** the exact directory reported as
 `selected_source.dir` by `capability authoring-context` — for the public corpus,
 `engineering-runtime-capabilities/capabilities/<provider>/`. Never this repo,
-the runtime binary, or Runtime Home. `RUNTIME_CAPABILITIES_DIR` relocates only
-the non-authoritative compatibility cache; it is not an authoring-source choice.
+the runtime binary, or Runtime Home.
+
+Since Runtime 0.9.2 that directory is usually the one named by
+`RUNTIME_CAPABILITIES_DIR`: it is read from *and* authored into, with no
+`capabilities.authoring_source` entry to configure first. Ask
+`authoring-context` rather than assuming — an operator running several
+directories will have named a different one, and Runtime asks instead of
+guessing when they have not.
 
 ---
 
