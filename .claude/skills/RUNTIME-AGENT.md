@@ -15,10 +15,10 @@ commands/capabilities satisfy the request — never about bypass tools.
    - Runtime Home `commands/*.txt` and `specs/`
 3. **Prefer existing capability**
    - `runtime --output json capability authoring-context` — installed contracts, exact authoring source and policy readiness
-   - `runtime capability list` — a Home cache is a non-authoritative copy
+   - `runtime capability list` — the source column names where each came from; only the unset Home fallback is a non-authoritative cache
    - `runtime capability validate <name>`
    - `runtime capability plan <name> --input k=v …`
-4. **If none exists** — author Markdown through `runtime files` into the exact configured `capabilities.authoring_source`. Validate, plan, and show the diff/digest. Publish and execute only through separate explicit requests.
+4. **If none exists** — write the Markdown into the directory `authoring-context` reports, using ordinary file tools. Since 0.9.2 that is normally `RUNTIME_CAPABILITIES_DIR` with nothing configured first, and authoring needs no `file_policy.write_roots` grant. Validate, plan, and show the diff/digest. Publish and execute only through separate explicit requests.
 5. **Auth when needed** — `runtime auth login` / `status` / `logout` for the provider(s) involved.
 6. **Audit** — `runtime audit tail` when the engineer needs proof of what ran.
 
