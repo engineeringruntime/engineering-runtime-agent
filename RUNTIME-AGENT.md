@@ -13,8 +13,8 @@ override it.
 ```bash
 runtime bootstrap
 # then read:
-#   ${ENGINEERING_RUNTIME_HOME:-$HOME/.engineering-runtime}/RUNTIME-AGENT.md
-#   ${ENGINEERING_RUNTIME_HOME:-$HOME/.engineering-runtime}/manifest.json
+#   ${RUNTIME_HOME:-$HOME/.engineering-runtime}/RUNTIME-AGENT.md
+#   ${RUNTIME_HOME:-$HOME/.engineering-runtime}/manifest.json
 ```
 
 `manifest.json` is the providers list for **this** binary. It is generated from
